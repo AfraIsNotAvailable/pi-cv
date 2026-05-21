@@ -19,9 +19,23 @@ There are no tests or lint steps configured.
 
 ## Architecture
 
-Single-executable playground. All processing code lives in [main.cpp](main.cpp); reusable scaffolding sits in [src/](src/).
+Single-executable playground. Effects live in `src/effects/` (one `.h`+`.cpp` per effect). Shared helper utilities are in `src/helpers/`. The `main.cpp` is a slim entry point: initialization, Slider registration, and key loop only.
 
-**Runtime loop** ([main.cpp:2240](main.cpp#L2240)): one Qt window (`"Image Processing"`) hosts both the output grid and the controls. A `Slider` owns a list of `SliderEntry` effects; arrow keys / `1..9` / Qt push buttons switch between them. On each iteration the current effect runs, fills an `OutputImages` vector, and [`renderGrid`](main.cpp#L2125) composites source + outputs into a uniform-cell canvas with label bars.
+**Source layout:**
+- `src/effects/` — one `.h` + `.cpp` per effect function (e.g. `negative.h/.cpp`, `lab8_transforms.h/.cpp`)
+- `src/helpers/` — utility modules split by category:
+  - `types.h` — shared enums (`NeighborhoodType`), constants (`kNeighbors4/8`, `kChainDirections4/8`), and structs (`RenderContext`, `ObjectStats`, `SelectionState`, `ChainCodeTrace`, `ChainCodeFileData`, `TwoPassLabelingResult`)
+  - `global_state.h/.cpp` — `g_renderContext`, `g_selectionState`, `g_needsUpdate`
+  - `image_utils.h/.cpp` — `toGray8U`, `ensureBgr`, `makeBinaryForeground`, `makeBlackForegroundMask`, `countBorderForeground`, `makeLab7ForegroundMask`
+  - `labeling.h/.cpp` — connected component labeling (BFS/DFS traversal, two-pass), label utilities
+  - `morphology.h/.cpp` — `dilate8Once`, `erode8Once`, morphological opening/closing/boundary/fill
+  - `chain_code.h/.cpp` — chain code encoding, derivative, reconstruction, parsing
+  - `histogram.h/.cpp` — histogram/PDF/CDF computation and rendering
+  - `geometry.h/.cpp` — `computeObjectStats`, row/column projections, `drawCombinedXYProjections`
+  - `rendering.h/.cpp` — `renderGrid`, `saveAllOutputs`, `loadImage`, `hasQtBackend`, `MAIN_WINDOW_NAME`, mouse callback, window title
+- `src/effects/assignment.h/.cpp` — `contour_similarity` effect (do not modify)
+
+**Runtime loop** (`main.cpp`): one Qt window (`"Image Processing"`) hosts both the output grid and the controls. A `Slider` owns a list of `SliderEntry` effects; arrow keys / `1..9` / Qt push buttons switch between them. On each iteration the current effect runs, fills an `OutputImages` vector, and `renderGrid` (from `src/helpers/rendering.h`) composites source + outputs into a uniform-cell canvas with label bars.
 
 **Three collaborating pieces** — understand these before modifying the effect pipeline:
 
@@ -29,20 +43,27 @@ Single-executable playground. All processing code lives in [main.cpp](main.cpp);
 - [src/controls/controls_manager.h](src/controls/controls_manager.h) — `ControlsManager` rebuilds trackbars + ON/OFF checkboxes + radio groups in the main window whenever the active effect changes. Lookups are by name string.
 - [src/common/output_images.h](src/common/output_images.h) — `OutputImages = vector<pair<string, cv::Mat>>`. Insertion order = grid order. Grayscale `Mat`s are auto-converted to BGR by `ensureBgr` during render.
 
-**Selection state for click-driven effects**: [main.cpp:2110](main.cpp#L2110) registers `mainWindowMouseCallback`, which maps a click on the `Source` panel back to source-image coords and stashes the result in the global `g_selectionState`. Effects like `selected_object_features` read that struct.
+**Selection state for click-driven effects**: `src/helpers/rendering.cpp` registers `mainWindowMouseCallback`, which maps a click on the `Source` panel back to source-image coords and stashes the result in the global `g_selectionState` (from `src/helpers/global_state.h`). Effects like `selected_object_features` include `src/helpers/global_state.h` to read that struct.
 
 ## Adding a New Effect
 
 The full walkthrough is in [EFFECTS.md](EFFECTS.md). Essentials:
 
-1. Write a function in `main.cpp` with one of:
+1. Create `src/effects/my_effect.h` and `src/effects/my_effect.cpp` with one of:
    ```cpp
+   // my_effect.h
+   #pragma once
+   #include "src/common/output_images.h"
+   #include <opencv2/opencv.hpp>
    void my_effect(const cv::Mat& src, OutputImages& outputs);                            // no controls
-   void my_effect(const cv::Mat& src, OutputImages& outputs, ControlsManager& controls); // with controls
-   ```
-   Push result(s) via `outputs.push_back({"Label", mat})`. Any number of outputs are supported — they all land in the grid.
 
-2. Register a `SliderEntry` in the `Slider slider(...)` initializer list inside `main()` ([main.cpp:2275](main.cpp#L2275)). Wrap the function with `EffectFn2(fn)` or `EffectFn3(fn)` matching its signature. No other files change.
+   // or with controls:
+   #include "src/controls/controls_manager.h"
+   void my_effect(const cv::Mat& src, OutputImages& outputs, ControlsManager& controls);
+   ```
+   In the `.cpp`, include `my_effect.h` and any needed helpers from `src/helpers/`. Push result(s) via `outputs.push_back({"Label", mat})`. Any number of outputs are supported — they all land in the grid.
+
+2. In `main.cpp`, add `#include "src/effects/my_effect.h"` at the top, then register a `SliderEntry` in the `Slider slider(...)` initializer list inside `main()`. Wrap the function with `EffectFn2(fn)` or `EffectFn3(fn)` matching its signature. No CMakeLists change needed — `src/` is globbed automatically.
 
 **Interactive controls — the rule for this codebase**: never roll your own sliders/buttons. Use the `ControlsManager` primitives:
 
