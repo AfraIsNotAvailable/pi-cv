@@ -1,0 +1,100 @@
+Executing 2 commands
+
+Doing ./scripts/conan_build.sh
+==> CONAN BUILDING <==
+
+
+WARN: **************************************************
+WARN: *** Conan 1 is legacy and on a deprecation path **
+WARN: *********** Please upgrade to Conan 2 ************
+WARN: **************************************************
+Using lockfile: '/home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template/build/conan.lock'
+Using cached profile from lockfile
+conanfile.py (image_processing_template/None): Calling build()
+conanfile.py (image_processing_template/None): CMake command: cmake -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE="/home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template/build/conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="/home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template/build/package" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" -DCMAKE_BUILD_TYPE="Release" "/home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template"
+-- Using Conan toolchain: /home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template/build/conan_toolchain.cmake
+-- A 64-bit OS detected
+-- Conan: checking conan executable
+-- Conan: Found program /home/afra/.local/bin/conan
+-- Conan: Version found Conan version 1.66.0
+
+-- Conan executing: /home/afra/.local/bin/conan install . --build missing --settings build_type=Release --settings compiler=gcc --settings compiler.version=15 --settings compiler.libcxx=libstdc++11
+
+WARN: **************************************************
+WARN: *** Conan 1 is legacy and on a deprecation path **
+WARN: *********** Please upgrade to Conan 2 ************
+WARN: **************************************************
+Configuration:
+[settings]
+arch=x86_64
+arch_build=x86_64
+build_type=Release
+compiler=gcc
+compiler.libcxx=libstdc++11
+compiler.version=15
+os=Linux
+os_build=Linux
+[options]
+[build_requires]
+[env]
+
+conanfile.txt: Installing package
+Requirements
+    fmt/8.0.1 from 'conancenter' - Cache
+    spdlog/1.9.2 from 'conancenter' - Cache
+Packages
+    fmt/8.0.1:f3cf16daf8cf5d6ffe340fa4b883e2b55b7de7e2 - Cache
+    spdlog/1.9.2:0fa8891b91d60ea75380f9a04e099bda6e146842 - Cache
+
+Installing (downloading, building) binaries...
+fmt/8.0.1: Already installed!
+spdlog/1.9.2: Already installed!
+conanfile.txt: WARN: Using the new toolchains and generators without specifying a build profile (e.g: -pr:b=default) is discouraged and might cause failures and unexpected behavior
+conanfile.txt: Generator 'CMakeDeps' calling 'generate()'
+conanfile.txt: Generator txt created conanbuildinfo.txt
+conanfile.txt: Aggregating env generators
+conanfile.txt: Generated conaninfo.txt
+conanfile.txt: Generated graphinfo
+WARN: Revisions are disabled. Using Conan without revisions enabled is deprecated
+WARN: **************************************************
+WARN: *** Conan 1 is legacy and on a deprecation path **
+WARN: *********** Please upgrade to Conan 2 ************
+WARN: **************************************************
+
+-- OpenCV library status:
+--     config: /usr/lib/cmake/opencv4
+--     version: 4.13.0
+--     libraries: opencv_calib3d;opencv_core;opencv_dnn;opencv_features2d;opencv_flann;opencv_gapi;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_ml;opencv_objdetect;opencv_photo;opencv_stitching;opencv_video;opencv_videoio;opencv_alphamat;opencv_aruco;opencv_bgsegm;opencv_bioinspired;opencv_ccalib;opencv_cvv;opencv_datasets;opencv_dnn_objdetect;opencv_dnn_superres;opencv_dpm;opencv_face;opencv_freetype;opencv_fuzzy;opencv_hdf;opencv_hfs;opencv_img_hash;opencv_intensity_transform;opencv_line_descriptor;opencv_mcc;opencv_optflow;opencv_phase_unwrapping;opencv_plot;opencv_quality;opencv_rapid;opencv_reg;opencv_rgbd;opencv_saliency;opencv_shape;opencv_signal;opencv_stereo;opencv_structured_light;opencv_superres;opencv_surface_matching;opencv_text;opencv_tracking;opencv_videostab;opencv_viz;opencv_wechat_qrcode;opencv_xfeatures2d;opencv_ximgproc;opencv_xobjdetect;opencv_xphoto
+--     include path: /usr/include/opencv4
+-- [INFO] Found 5 header directories.
+-- Conan: Component target declared 'spdlog::spdlog'
+-- Conan: Component target declared 'fmt::fmt'
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template/build
+conanfile.py (image_processing_template/None): CMake command: cmake --build "/home/afra/utcn/anul3/pi/image-processing-laboratory_linux_template/build" '--' '-j12'
+[100%] Built target opengl_template
+
+==> CONAN BUILT <==
+
+real	0m1.500s
+user	0m1.344s
+sys	0m0.156s
+
+Doing ./build/opengl_template
+(66235 66235) from global with [debug] at [2026-03-05 16:3313.919]
+Opening file ./assets/images/cameraman.bmp
+
+(66235 66235) from global with [debug] at [2026-03-05 16:3313.921]
+image loaded with 256 256
+
+(66235 66235) from global with [info] at [2026-03-05 16:3313.921]
+Press the arrow keys to cycle through execution slides
+
+QSettings::value: Empty key passed
+(66235 66235) from global with [debug] at [2026-03-05 16:3317.831]
+Next
+
+(66235 66235) from global with [debug] at [2026-03-05 16:3320.811]
+Next
+

@@ -1,0 +1,8 @@
+{
+    "version": 8,
+    "vendor": {
+        "note": "This file defines base presets. After running conan install, use cmake --preset conan-debug"
+    },
+    "configurePresets": [],
+    "buildPresets": []
+}
